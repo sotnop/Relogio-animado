@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Relógio Abissal - Oceano Profundo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Segoe UI', 'Poppins', 'Arial', sans-serif;
+            /* Fundo escuro profundo - gradiente abissal */
+            background: radial-gradient(circle at 20% 30%, #03111f, #010a14);
+            height: 100vh;
+            width: 100vw;
+            position: relative;
+        }
+
+        /* Camada adicional de profundidade com degrade sutil */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at 40% 50%, rgba(0, 20, 50, 0.6), rgba(0, 0, 0, 0.9));
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* RELÓGIO PRINCIPAL - números brancos com brilho suave e sombra escura impactante */
+        .clock {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: clamp(2.8rem, 14vw, 7rem);
+            font-weight: 700;
+            font-family: 'Courier New', 'Fira Mono', monospace;
+            letter-spacing: 6px;
+            color: #ffffff;
+            text-shadow: 
+                0 0 12px rgba(255,255,255,0.8),
+                0 0 25px rgba(0,180,255,0.5),
+                0 4px 15px rgba(0,0,0,0.6);
+            background: rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(3px);
+            padding: 0.3em 0.6em;
+            border-radius: 60px;
+            border: 1px solid rgba(255,255,240,0.2);
+            z-index: 20;
+            white-space: nowrap;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transition: all 0.2s ease;
+        }
+
+        /* Efeito sutil de "respiração" no relógio */
+        .clock:hover {
+            text-shadow: 0 0 20px cyan, 0 0 35px #00a6ff;
+            border-color: rgba(100, 200, 255, 0.5);
+        }
+
+        /* BOLHAS - versão aprimorada com brilho aquático */
+        .bubble {
+            position: absolute;
+            bottom: -100px;
+            background: radial-gradient(circle at 30% 30%, rgba(210, 240, 255, 0.5), rgba(140, 210, 255, 0.2));
+            border-radius: 50%;
+            box-shadow: inset 0 0 6px rgba(255,255,245,0.8), 0 0 12px rgba(70, 180, 255, 0.4);
+            backdrop-filter: blur(1px);
+            animation: rise linear infinite;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        @keyframes rise {
+            0% {
+                transform: translateY(0) scale(0.9);
+                opacity: 0.7;
+            }
+            50% {
+                opacity: 0.9;
+                transform: translateY(-40vh) scale(1.05);
+            }
+            100% {
+                transform: translateY(-120vh) scale(1.3);
+                opacity: 0;
+            }
+        }
+
+        /* PEIXES ESTILIZADOS - design melhorado com animação fluida e inversão suave */
+        .fish {
+            position: absolute;
+            width: 85px;
+            filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.6));
+            cursor: pointer;
+            transition: transform 0.1s ease;
+            z-index: 12;
+            opacity: 0.85;
+        }
+
+        .fish:hover {
+            opacity: 1;
+            filter: drop-shadow(0 0 8px #00ccff);
+        }
+
+        /* Animação de nado contínuo e realista */
+        @keyframes swimHorizontal {
+            0% {
+                left: -120px;
+                transform: scaleX(1);
+            }
+            45% {
+                transform: scaleX(1);
+            }
+            50% {
+                transform: scaleX(-1);
+            }
+            95% {
+                transform: scaleX(-1);
+            }
+            100% {
+                left: calc(100% + 80px);
+                transform: scaleX(-1);
+            }
+        }
+
+        /* Segundo peixe com velocidade diferente */
+        .fish-fast {
+            animation: swimHorizontal 18s linear infinite;
+        }
+
+        .fish-slow {
+            animation: swimHorizontal 28s linear infinite;
+        }
+
+        /* Para peixes que nadam em camadas diferentes (vertical offset) */
+        /* Estrelas-do-mar / partículas bioluminescentes opcionais */
+        .glow-particle {
+            position: absolute;
+            background: rgba(0, 255, 210, 0.3);
+            border-radius: 50%;
+            box-shadow: 0 0 12px cyan;
+            animation: floatGlow 8s infinite alternate;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @keyframes floatGlow {
+            0% {
+                transform: translateY(0px) scale(0.6);
+                opacity: 0.2;
+            }
+            100% {
+                transform: translateY(-30px) scale(1.1);
+                opacity: 0.7;
+            }
+        }
+
+        /* Texto inspiratório de profundidade (opcional, elegante) */
+        .depth-note {
+            position: absolute;
+            bottom: 18px;
+            right: 22px;
+            font-size: 12px;
+            color: rgba(200, 220, 255, 0.6);
+            font-family: monospace;
+            background: rgba(0, 0, 0, 0.35);
+            padding: 4px 12px;
+            border-radius: 50px;
+            backdrop-filter: blur(3px);
+            letter-spacing: 1px;
+            z-index: 20;
+            pointer-events: none;
+        }
+
+        /* Evento de ondulação ao passar mouse no container */
+        .marine-particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        /* Responsividade: ajuste o relógio para telas pequenas */
+        @media (max-width: 600px) {
+            .clock {
+                letter-spacing: 3px;
+                padding: 0.2em 0.4em;
+                border-radius: 40px;
+            }
+            .fish {
+                width: 65px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="clock" id="clock">--:--:--</div>
+<div class="depth-note">🌊 ZONA ABISSAL | RELÓGIO BIOLUMINESCENTE</div>
+
+<!-- Camada para partículas extras (micro-organismos) -->
+<div id="particleLayer" class="marine-particles"></div>
+
+<!-- Peixes: múltiplas criaturas para dar mais vida -->
+<img class="fish fish-slow" src="https://cdn-icons-png.flaticon.com/512/616/616408.png" alt="peixe laranja" style="top: 25%; width: 75px;">
+<img class="fish fish-fast" src="https://cdn-icons-png.flaticon.com/512/3095/3095110.png" alt="peixe azul" style="top: 55%; width: 90px; filter: brightness(1.1) drop-shadow(0 0 6px #0af);">
+<img class="fish fish-slow" src="https://cdn-icons-png.flaticon.com/512/1995/1995572.png" alt="peixe claro" style="top: 78%; width: 70px; animation-duration: 32s; opacity: 0.7;">
+<img class="fish fish-fast" src="https://cdn-icons-png.flaticon.com/512/484/484167.png" alt="peixe tropical" style="top: 12%; width: 65px; animation-duration: 22s;">
+
+<script>
+    // ---------- RELÓGIO DIGITAL NÚMEROS BRANCOS (FUNDO ESCURO) ----------
+    function updateClock() {
+        const now = new Date();
+        let hours = String(now.getHours()).padStart(2, '0');
+        let minutes = String(now.getMinutes()).padStart(2, '0');
+        let seconds = String(now.getSeconds()).padStart(2, '0');
+        const clockElement = document.getElementById('clock');
+        if (clockElement) {
+            clockElement.innerText = `${hours}:${minutes}:${seconds}`;
+        }
+    }
+    // Atualizar imediatamente e a cada 1 segundo
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    // ---------- BOLHAS OCEÂNICAS MELHORADAS (quantidade e estilo fluido) ----------
+    function createBubble() {
+        const bubble = document.createElement('div');
+        bubble.classList.add('bubble');
+
+        // Tamanhos variados: de 8px até 42px
+        const size = 8 + Math.random() * 34;
+        bubble.style.width = `${size}px`;
+        bubble.style.height = `${size}px`;
+        
+        // Posição horizontal aleatória dentro da tela (com pequena margem)
+        bubble.style.left = `${Math.random() * 100}%`;
+        
+        // Duração da animação entre 3s e 11s (ascensão mais natural)
+        const duration = 3 + Math.random() * 8;
+        bubble.style.animationDuration = `${duration}s`;
+        
+        // Atraso opcional para não ficar sincronizado
+        bubble.style.animationDelay = `${Math.random() * 5}s`;
+        
+        // Opacidade variável entre 0.3 e 0.8
+        bubble.style.opacity = 0.3 + Math.random() * 0.5;
+        
+        document.body.appendChild(bubble);
+        
+        // Remover elemento após o término da animação + segurança
+        setTimeout(() => {
+            if (bubble && bubble.remove) bubble.remove();
+        }, duration * 1000 + 300);
+    }
+
+    // Criar bolhas em intervalos regulares (mais frequente para sensação de movimento)
+    let bubbleInterval = setInterval(() => {
+        // Gera entre 1 e 3 bolhas por vez para parecer mais orgânico
+        const bubblesCount = Math.floor(Math.random() * 3) + 1;
+        for (let i = 0; i < bubblesCount; i++) {
+            createBubble();
+        }
+    }, 280);
+
+    // ---------- PARTÍCULAS BIOLUMINESCENTES (suspensas no escuro) ----------
+    function createGlowParticle() {
+        const particle = document.createElement('div');
+        particle.classList.add('glow-particle');
+        const size = 3 + Math.random() * 8;
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        particle.style.position = 'absolute';
+        particle.style.left = `${Math.random() * 100}%`;
+        particle.style.top = `${Math.random() * 90}%`;
+        particle.style.animationDuration = `${4 + Math.random() * 10}s`;
+        particle.style.animationDelay = `${Math.random() * 5}s`;
+        particle.style.background = `radial-gradient(circle, rgba(0, 255, 200, 0.7), rgba(0, 180, 210, 0.2))`;
+        document.getElementById('particleLayer').appendChild(particle);
+        
+        setTimeout(() => {
+            if (particle && particle.remove) particle.remove();
+        }, 12000);
+    }
+    
+    // Gerar micropartículas luminosas a cada segundo e meia (para dar vida)
+    setInterval(() => {
+        if (document.getElementById('particleLayer')) {
+            createGlowParticle();
+            if (Math.random() > 0.6) createGlowParticle(); // as vezes duas
+        }
+    }, 1300);
+    
+    // Criar algumas partículas iniciais
+    for (let i = 0; i < 35; i++) {
+        setTimeout(() => createGlowParticle(), i * 200);
+    }
+
+    // ---------- INTERAÇÃO BÔNUS: clique nos peixes faz eles brilharem + efeito sonoro simbólico (opcional sem som real) ----------
+    const allFishes = document.querySelectorAll('.fish');
+    allFishes.forEach(fish => {
+        fish.addEventListener('click', (e) => {
+            e.stopPropagation();
+            // Efeito de flash branco + dourado
+            fish.style.transition = 'filter 0.2s, transform 0.1s';
+            fish.style.filter = 'drop-shadow(0 0 14px #ffdd88) brightness(1.3)';
+            fish.style.transform = 'scale(1.05)';
+            setTimeout(() => {
+                fish.style.filter = '';
+                fish.style.transform = '';
+            }, 300);
+            
+            // Criar um pequeno circulo de bolhas local (efeito visual)
+            for (let b = 0; b < 6; b++) {
+                const miniBubble = document.createElement('div');
+                miniBubble.classList.add('bubble');
+                const rect = fish.getBoundingClientRect();
+                miniBubble.style.left = (rect.left + rect.width / 2 + (Math.random() - 0.5) * 40) + 'px';
+                miniBubble.style.top = (rect.top + rect.height / 2) + 'px';
+                miniBubble.style.width = '8px';
+                miniBubble.style.height = '8px';
+                miniBubble.style.animationDuration = '1.2s';
+                miniBubble.style.position = 'fixed';
+                miniBubble.style.opacity = '0.9';
+                miniBubble.style.background = 'radial-gradient(circle, #fffbc2, #ffb347)';
+                document.body.appendChild(miniBubble);
+                setTimeout(() => miniBubble.remove(), 1200);
+            }
+        });
+    });
+    
+    // ---------- AJUSTE DINÂMICO PARA REDIMENSIONAMENTO DA JANELA (evitar bolhas ou peixes fora do contexto) ----------
+    // Não precisamos reiniciar animações, mas garantir que bolhas não acumulem fora de controle - já temos remove automático.
+
+    // Adicionar efeito de ondulação sutil ao mover mouse? (opcional apenas para atmosfera)
+    let mouseX = 0, mouseY = 0;
+    document.body.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        // Criar uma leve ondulação na sombra do relógio (efeito de profundidade)
+        const clockDiv = document.querySelector('.clock');
+        if (clockDiv) {
+            const moveX = (mouseX / window.innerWidth - 0.5) * 10;
+            const moveY = (mouseY / window.innerHeight - 0.5) * 10;
+            clockDiv.style.transform = `translate(calc(-50% + ${moveX * 0.3}px), calc(-50% + ${moveY * 0.2}px))`;
+        }
+    });
+    
+    // Reset da posição do relógio quando o mouse sai da tela
+    document.body.addEventListener('mouseleave', () => {
+        const clockDiv = document.querySelector('.clock');
+        if (clockDiv) clockDiv.style.transform = 'translate(-50%, -50%)';
+    });
+    
+    // Melhorias de performance: limitar bolhas em modo economia (não necessário, mas elegante)
+    // Remover intervalo se a página ficar oculta (opcional, otimização)
+    const visibilityHandler = () => {
+        if (document.hidden) {
+            clearInterval(bubbleInterval);
+            bubbleInterval = null;
+        } else {
+            if (!bubbleInterval) {
+                bubbleInterval = setInterval(() => {
+                    const bubblesCount = Math.floor(Math.random() * 3) + 1;
+                    for (let i = 0; i < bubblesCount; i++) createBubble();
+                }, 280);
+            }
+        }
+    };
+    document.addEventListener('visibilitychange', visibilityHandler);
+    
+    // Limpeza preventiva ao carregar e garantir que todos os elementos convivam
+    window.addEventListener('load', () => {
+        // Ajustar o aspecto inicial do relógio
+        updateClock();
+        // Criar camada extra de bolhas iniciais para preencher o fundo marinho
+        for (let i = 0; i < 18; i++) {
+            setTimeout(() => createBubble(), i * 100);
+        }
+        
+        // Adicionar uma "luz" pulsante sutil simulando bioluminescência profunda no fundo
+        const overlayGlow = document.createElement('div');
+        overlayGlow.style.position = 'fixed';
+        overlayGlow.style.bottom = '10%';
+        overlayGlow.style.left = '5%';
+        overlayGlow.style.width = '150px';
+        overlayGlow.style.height = '150px';
+        overlayGlow.style.background = 'radial-gradient(circle, rgba(0,150,200,0.1), transparent)';
+        overlayGlow.style.borderRadius = '50%';
+        overlayGlow.style.filter = 'blur(35px)';
+        overlayGlow.style.pointerEvents = 'none';
+        overlayGlow.style.zIndex = '0';
+        document.body.appendChild(overlayGlow);
+        
+        const secondGlow = overlayGlow.cloneNode();
+        secondGlow.style.bottom = 'auto';
+        secondGlow.style.top = '15%';
+        secondGlow.style.right = '0%';
+        secondGlow.style.left = 'auto';
+        secondGlow.style.width = '200px';
+        secondGlow.style.height = '200px';
+        secondGlow.style.background = 'radial-gradient(circle, rgba(0,200,180,0.08), transparent)';
+        document.body.appendChild(secondGlow);
+        
+        // Animar esses brilhos suavemente
+        let angle = 0;
+        setInterval(() => {
+            angle += 0.005;
+            const xOffset = Math.sin(angle) * 20;
+            const yOffset = Math.cos(angle * 0.7) * 15;
+            if (overlayGlow) {
+                overlayGlow.style.transform = `translate(${xOffset * 0.5}px, ${yOffset * 0.3}px)`;
+            }
+            if (secondGlow) {
+                secondGlow.style.transform = `translate(${-xOffset * 0.4}px, ${yOffset * 0.2}px)`;
+            }
+        }, 150);
+    });
+
+    // Função para gerar formas geométricas de algas escuras no fundo? já temos muita vida marinha boa. 
+    // Adicionar algas flutuantes minimalistas com CSS puro (elementos decorativos)
+    const createSeaweed = () => {
+        const seaweed = document.createElement('div');
+        seaweed.style.position = 'absolute';
+        seaweed.style.bottom = '0px';
+        seaweed.style.left = `${Math.random() * 100}%`;
+        seaweed.style.width = '12px';
+        seaweed.style.height = `${40 + Math.random() * 90}px`;
+        seaweed.style.background = 'linear-gradient(to top, #0a2f2f, #0a4c4c)';
+        seaweed.style.borderRadius = '40% 40% 20% 20%';
+        seaweed.style.opacity = '0.25';
+        seaweed.style.filter = 'blur(3px)';
+        seaweed.style.zIndex = '1';
+        seaweed.style.pointerEvents = 'none';
+        document.body.appendChild(seaweed);
+    };
+    for (let i = 0; i < 12; i++) {
+        setTimeout(() => createSeaweed(), i * 400);
+    }
+    
+    // Evitar conflito de z-index
+    console.log('🌊 Relógio Oceânico Profundo - Fundo escuro ativado | Números brancos com brilho');
+</script>
+
+</body>
+</html>
